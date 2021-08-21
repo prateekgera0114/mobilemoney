@@ -24,14 +24,9 @@ yarn-error.log*
 
 /dist
 
-/public
 
 node_modules
 
 /node_modules
 
 node_modules/*
-
-public
-
-public/*
