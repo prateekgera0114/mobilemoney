@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the Code
-        run: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Verify Basic SSH stuff
         run: | 
