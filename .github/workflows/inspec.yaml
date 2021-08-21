@@ -15,8 +15,8 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
           ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
-        continue-on-error: true
+          cat ~/.ssh/known_hosts
 
-      # - name: Run Chef Help
-      #   run: docker run --rm -v $(pwd):/opt chef/inspec --help
+      - name: Run Chef Help
+        run: docker run --rm -v $(pwd):/opt chef/inspec --help
 
