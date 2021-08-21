@@ -3,7 +3,7 @@ on: [push]
 jobs:
   nmap-scan:
     runs-on: ubuntu-latest
-    needs: deployment
+    #needs: deployment
     steps:
       - name: Updated Packages
         run: apt-get update
