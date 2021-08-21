@@ -6,8 +6,10 @@ jobs:
     steps:
       - name: Verify Basic SSH stuff
         run: | 
-          cd ~/.ssh
-          pwd
+          mkdir -p ~/.ssh
+          echo "dummy file" > ~/.ssh/dummy.txt
+          ls ~/.ssh/dummy.txt
+          echo "$DEPLOYMENT_SERVER_SSH_PRIVKEY" | tr -d '\r' > ~/.ssh/id_rsa
         continue-on-error: true
 
       # - name: Run Chef Help
