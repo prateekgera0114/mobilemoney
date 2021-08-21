@@ -7,23 +7,30 @@ jobs:
       - name: Checkout the Code
         uses: actions/checkout@v2
 
-      - name: Verify Basic SSH stuff
-        run: | 
-          mkdir -p ~/.ssh
-          echo "dummy file" > ~/.ssh/dummy.txt
-          ls ~/.ssh/dummy.txt
-          echo "${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-          cat ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      # - name: Verify Basic SSH stuff
+      #   run: | 
+      #     mkdir -p ~/.ssh
+      #     echo "dummy file" > ~/.ssh/dummy.txt
+      #     ls ~/.ssh/dummy.txt
+      #     echo "${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+      #     cat ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
 
-      - name: Run the SSH Agent
-        run: |
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
+      # - name: Run the SSH Agent
+      #   run: |
+      #     eval "$(ssh-agent -s)"
+      #     ssh-add ~/.ssh/id_rsa
 
       # - name: Add to the Known Hosts
       #   run: |
       #     ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
+
+      - name: Configure SSH Access
+        env:
+          PRIVATE_KEY: ${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}
+          HOSTNAME : ${{ secrets.DEPLOYMENT_SERVER }}
+        run: |
+          echo "$PRIVATE_KEY" > serverkey.pem && chmod 600 serverkey.pem
 
       - name: install chef
         uses: actionshub/chef-install@main
@@ -32,6 +39,6 @@ jobs:
         run: inspec --help
 
       - name: Run Chef Inspec
-        run: inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i /root/.ssh/id_rsa --chef-license accept --reporter json:inspec-output.json
+        run: inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i serverkey.pem --chef-license accept --reporter json:inspec-output.json
 
 
