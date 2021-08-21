@@ -4,9 +4,6 @@ jobs:
   inspec-scan:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "Present Working directory"
-          pwd
-          echo "docker version"
-          docker version
-          
+      - name: Run Chef Help
+        run: docker run --rm -v $(pwd):/share chef/inspec --help
+
