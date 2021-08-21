@@ -4,6 +4,12 @@ jobs:
   inspec-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Run Chef Help
-        run: docker run --rm -v $(pwd):/share chef/inspec --help
+      - name: Verify Basic SSH stuff
+        run: | 
+          cd ~/.ssh
+          pwd
+        continue-on-error: true
+
+      # - name: Run Chef Help
+      #   run: docker run --rm -v $(pwd):/opt chef/inspec --help
 
