@@ -7,3 +7,6 @@ jobs:
     steps:
       - name: Run Inspec
         run: docker run --rm -v $(pwd):/share chef/inspec --help
+
+      - name: Check Inspec
+        run: docker run --rm -v /root/.ssh:/root/.ssh -v $(pwd):/opt chef/inspec exec https://github.com/dev-sec/linux-baseline -t ssh://root@${{DEPLOYMENT_SERVER}} -i /root/.ssh/id_rsa --chef-license accept --reporter json:/opt/inspec-output.json
