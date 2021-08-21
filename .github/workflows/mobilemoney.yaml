@@ -1,85 +1,23 @@
 name: MobileMoney Build and Deployment Workflow
 on: [push]
 jobs:
-  unit-testing:
+  nmap-scan:
     runs-on: ubuntu-latest
+    needs: deployment
     steps:
-      - name: Checkout the Code
-        uses: actions/checkout@v2
-
-      - name: Install Node Modules
-        run: npm install
-
-      - name: Run the Test Case
-        run: npm test
-
-  code-coverage:
-    runs-on: ubuntu-latest
-    needs: unit-testing
-    steps:
-      - name: Checkout the Code
-        uses: actions/checkout@v2
-
-      - name: Install Node Modules
-        run: npm install
-
-      - name: Run the code Coverage
-        run: npm test -- --coverage
-        env:
-          CI: true
+      - name: Updated Packages
+        run: apt-get update
       
-      - name: Upload the Test Coverage Results
-        uses: actions/upload-artifact@v1
-        with:
-          name: code-coverage-files
-          path: coverage    
+      - name: Install Nmap
+        run: apt-get install nmap -y
 
-  build:
-    runs-on: ubuntu-latest
-    needs: code-coverage
-    steps:
-      - name: Checkout the Code
-        uses: actions/checkout@v2
+      - name: Scan the Domain
+        run: nmap ${{ secrets.SURGE_DOMAIN }} -oX nmap-output.xml
 
-      - name: Install Node Modules
-        run: npm install
-
-      - name: Run the Build
-        run: npm run build 
-      
-      - name: Upload the Test Coverage Results
+      - name: Upload the Scan Report
         uses: actions/upload-artifact@v2
         with:
-          name: build-files
-          path: build
-        if: always()       
+          name: nmap-results
+          path: nmap-output.xml
+        if: always()    
 
-
-  functonaltesting:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Functional Testing
-        run: echo "Functional Testing"
-
-
-  deployment:
-    runs-on: ubuntu-latest
-    needs: functonaltesting
-    steps:
-      - name: Checkout the Code
-        uses: actions/checkout@v2
-
-      - name: Install Surge
-        run: npm install -g surge
-   
-      - name: Download the Build Folder from Previous Stage
-        uses: actions/download-artifact@v2
-        with:
-          name: build-files
-
-      - name: Debugging Verify the Path
-        run: ls -R
-
-      - name: Push the files to Surge Server
-        run: surge ./ ${{ secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
