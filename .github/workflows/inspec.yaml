@@ -2,7 +2,8 @@ name: Compliance as Code
 on: [push]
 jobs:
   inspec-scan:
-    runs-on: ubuntu-latest
+    image: hysnsec/inspec
+    # runs-on: ubuntu-latest
     steps:
       - name: Verify Basic SSH stuff
         run: | 
@@ -21,6 +22,9 @@ jobs:
       # - name: Add to the Known Hosts
       #   run: |
       #     ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
+      
+      - name: Run Chef Help
+        run: inspec --help
 
       - name: Run Chef Help
         run: docker run --rm -v /home/runner/.ssh:/root/.ssh -v $(pwd):/opt chef/inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i /root/.ssh/id_rsa --chef-license accept --reporter json:/opt/inspec-output.json
