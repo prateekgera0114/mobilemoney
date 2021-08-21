@@ -28,7 +28,6 @@ jobs:
       - name: Configure SSH Access
         env:
           PRIVATE_KEY: ${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}
-          HOSTNAME : ${{ secrets.DEPLOYMENT_SERVER }}
         run: |
           echo "$PRIVATE_KEY" > serverkey.pem && chmod 600 serverkey.pem
 
@@ -37,6 +36,11 @@ jobs:
 
       - name: Run Chef Help
         run: inspec --help
+
+      - name: Run the SSH Agent
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add serverkey.pem
 
       - name: Run Chef Inspec
         run: inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i serverkey.pem --chef-license accept --reporter json:inspec-output.json
