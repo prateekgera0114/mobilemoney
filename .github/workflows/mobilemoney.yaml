@@ -3,7 +3,7 @@ on: [push]
 jobs:
   inspec-scan:
     runs-on: ubuntu-latest
-    #needs: deployment
+    #needs: deployment # need
     steps:
       - name: Updated Packages
         run: sudo apt-get update
@@ -17,15 +17,15 @@ jobs:
       - name: Configure SSH Keys
         run: |
           mkdir -p ~/.ssh
-          echo ${{DEPLOYMENT_SERVER_SSH_PRIVKEY}} | tr -d '\r' > ~/.ssh/id_rsa
+          echo ${{ DEPLOYMENT_SERVER_SSH_PRIVKEY }} | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
-          ssh-keyscan -H ${{DEPLOYMENT_SERVER}} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ DEPLOYMENT_SERVER }} >> ~/.ssh/known_hosts
 
       - name: Scan the Server
         run: |
-          inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@${{DEPLOYMENT_SERVER}} -i ~/.ssh/id_rsa --chef-license accept --reporter json:inspec-output.json
+          inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@${{ DEPLOYMENT_SERVER }} -i ~/.ssh/id_rsa --chef-license accept --reporter json:inspec-output.json
       
       - name: Upload the Scan Report
         uses: actions/upload-artifact@v2
