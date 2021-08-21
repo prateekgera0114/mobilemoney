@@ -21,9 +21,9 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
 
-      - name: Add to the Known Hosts
-        run: |
-          ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
+      # - name: Add to the Known Hosts
+      #   run: |
+      #     ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
 
       - name: install chef
         uses: actionshub/chef-install@main
@@ -31,7 +31,7 @@ jobs:
       - name: Run Chef Help
         run: inspec --help
 
-      # - name: Run Chef Help
-      #   run: docker run --rm -v /home/runner/.ssh:/root/.ssh -v $(pwd):/opt chef/inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i /root/.ssh/id_rsa --chef-license accept --reporter json:/opt/inspec-output.json
+      - name: Run Chef Inspec
+        run: inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i /root/.ssh/id_rsa --chef-license accept --reporter json:inspec-output.json
 
 
