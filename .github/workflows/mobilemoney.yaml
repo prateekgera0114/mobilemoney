@@ -11,13 +11,12 @@ jobs:
       - name: Install inspec
         run: wget https://packages.chef.io/files/stable/inspec/4.18.114/ubuntu/16.04/inspec_4.18.114-1_amd64.deb
       
-      - run: sudo dkpg -i dpkg -i inspec_4.18.114-1_amd64.deb
+        - run: sudo dkpg -i dpkg -i inspec_4.18.114-1_amd64.deb
       
-      - run: inspec --help
+        - run: inspec --help
 
       - name: Configure SSH Keys
-      
-      - run: mkdir -p ~/.ssh
+        run: mkdir -p ~/.ssh
       
       - run: echo ${{ DEPLOYMENT_SERVER_SSH_PRIVKEY }} | tr -d '\r' > ~/.ssh/id_rsa
       
