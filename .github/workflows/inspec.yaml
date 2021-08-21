@@ -1,0 +1,12 @@
+name: Compliance as Code
+on: [push]
+jobs:
+  inspec-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Present Working directory"
+          pwd
+          echo "docker version"
+          docker version
+          

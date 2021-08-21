@@ -1,5 +1,5 @@
 name: MobileMoney Build and Deployment Workflow
-on: [push]
+#on: [push]
 jobs:
   inspec-scan:
     runs-on: ubuntu-latest
