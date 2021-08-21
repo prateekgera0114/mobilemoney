@@ -6,7 +6,9 @@ jobs:
     #needs: deployment # need
     steps:
       - name: Updated Packages
-        run: sudo apt-get update
+        run: |
+          sudo apt-get update
+          sudo apt install openssh-server
 
       - name: Install inspec
         run: |
