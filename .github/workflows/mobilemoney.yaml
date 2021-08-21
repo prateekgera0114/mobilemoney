@@ -1,23 +1,36 @@
 name: MobileMoney Build and Deployment Workflow
 on: [push]
 jobs:
-  nmap-scan:
+  inspec-scan:
     runs-on: ubuntu-latest
     #needs: deployment
     steps:
       - name: Updated Packages
         run: sudo apt-get update
       
-      - name: Install Nmap
-        run: sudo apt-get install nmap -y
+      - name: Install inspec
+        run: |
+          wget https://packages.chef.io/files/stable/inspec/4.18.114/ubuntu/16.04/inspec_4.18.114-1_amd64.deb
+          sudo dkpg -i dpkg -i inspec_4.18.114-1_amd64.deb
+          inspec --help
 
-      - name: Scan the Domain
-        run: nmap ${{ secrets.SURGE_DOMAIN }} -oX nmap-output.xml
+      - name: Configure SSH Keys
+        run: |
+          mkdir -p ~/.ssh
+          echo ${{DEPLOYMENT_SERVER_SSH_PRIVKEY}} | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+          ssh-keyscan -H ${{DEPLOYMENT_SERVER}} >> ~/.ssh/known_hosts
 
+      - name: Scan the Server
+        run: |
+          inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@${{DEPLOYMENT_SERVER}} -i ~/.ssh/id_rsa --chef-license accept --reporter json:inspec-output.json
+      
       - name: Upload the Scan Report
         uses: actions/upload-artifact@v2
         with:
-          name: nmap-results
-          path: nmap-output.xml
+          name: inspec-scan-report
+          path: inspec-output.json
         if: always()    
 
