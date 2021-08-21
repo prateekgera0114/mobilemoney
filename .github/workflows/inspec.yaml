@@ -21,8 +21,8 @@ jobs:
       - name: Add to the Known Hosts
         run: |
           ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
-          cat ~/.ssh/known_hosts
 
       - name: Run Chef Help
-        run: docker run --rm -v $(pwd):/opt chef/inspec --help
+        run: docker run --rm -v /home/runner/.ssh:/root/.ssh -v $(pwd):/opt chef/inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i /root/.ssh/id_rsa --chef-license accept --reporter json:/opt/inspec-output.json
+
 
