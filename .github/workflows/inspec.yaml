@@ -3,7 +3,7 @@ on: [push]
 jobs:
   inspec-scan:
     image: hysnsec/inspec
-    # runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Verify Basic SSH stuff
         run: | 
