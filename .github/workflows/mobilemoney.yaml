@@ -6,4 +6,4 @@ jobs:
     #needs: deployment # need
     steps:
       - name: Run Inspec
-        run: docker run -it --rm -v $(pwd):/share chef/inspec --help
+        run: docker run --rm -v $(pwd):/share chef/inspec --help
