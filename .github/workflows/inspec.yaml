@@ -21,9 +21,10 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
 
-      # - name: Add to the Known Hosts
-      #   run: |
-      #     ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
+      - name: Add to the Known Hosts
+        run: |
+          ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
+
       - name: install chef
         uses: actionshub/chef-install@main
 
