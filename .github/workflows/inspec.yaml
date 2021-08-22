@@ -42,11 +42,28 @@ jobs:
       #     eval "$(ssh-agent -s)"
       #     ssh-add serverkey.pem
 
+      # - name: Run Chef Inspec
+      #   env:
+      #     PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
+      #   run: |
+      #     echo "$PRIVATE_KEY" > serverkey && chmod 600 serverkey
+      #     inspec exec ubuntuhardening -t ssh://azureuser@20.102.88.75 -i serverkey --chef-license accept --reporter json:inspec-output.json
+
       - name: Run Chef Inspec
         env:
           PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
         run: |
-          echo "$PRIVATE_KEY" > serverkey && chmod 600 serverkey
-          inspec exec ubuntuhardening -t ssh://azureuser@20.102.88.75 -i serverkey --chef-license accept --reporter json:inspec-output.json
+          echo "$PRIVATE_KEY" > serverkey && chmod 600 serverkeY
 
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        env:
+          PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
+        with:
+          host: 20.102.88.75
+          username: azureuser
+          key: $PRIVATE_KEY
+          port: 22
+          source: "package.json"
+          target: "/home/nishanth/package.json"
 
