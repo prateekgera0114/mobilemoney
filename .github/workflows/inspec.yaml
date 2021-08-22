@@ -14,17 +14,12 @@ jobs:
         env:
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          inspec exec ubuntuhardening -t ssh://nishanth@20.51.237.143 --password $SERVER_PASSWORD --chef-license accept
+          inspec exec ubuntuhardening -t ssh://nishanth@20.51.237.143 --password $SERVER_PASSWORD --chef-license accept --reporter json:inspec-output.json
+        continue-on-error: true
 
-      # - name: copy file via ssh password
-      #   uses: appleboy/scp-action@master
-      #   env:
-      #     PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
-      #   with:
-      #     host: 20.102.88.75
-      #     username: azureuser
-      #     key: $PRIVATE_KEY
-      #     port: 22
-      #     source: "package.json"
-      #     target: "/home/nishanth/package.json"
-
+      - name: Upload the Scan Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: inspec-scan-report
+          path: inspec-output.json
+        if: always()   
