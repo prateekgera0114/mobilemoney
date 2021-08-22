@@ -1,9 +1,9 @@
 name: Compliance as Code
 on: [push]
 jobs:
+
   build:
     runs-on: ubuntu-latest
-    needs: code-coverage
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2
