@@ -47,6 +47,6 @@ jobs:
           PRIVATE_KEY: ${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}
         run: |
           echo "$PRIVATE_KEY" > serverkey.pem && chmod 600 serverkey.pem
-          inspec exec https://github.com/dev-sec/linux-baseline -t ssh://azureuser@20.102.88.75 -i serverkey.pem --chef-license accept --reporter json:inspec-output.json
+          inspec exec ubuntuhardening -t ssh://azureuser@20.102.88.75 -i serverkey.pem --chef-license accept --reporter json:inspec-output.json
 
 
