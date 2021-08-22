@@ -44,9 +44,9 @@ jobs:
 
       - name: Run Chef Inspec
         env:
-          PRIVATE_KEY: ${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}
+          PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
         run: |
-          echo "$PRIVATE_KEY" > serverkey.pem && chmod 600 serverkey.pem
-          inspec exec ubuntuhardening -t ssh://azureuser@20.102.88.75 -i serverkey.pem --chef-license accept --reporter json:inspec-output.json
+          echo "$PRIVATE_KEY" > serverkey && chmod 600 serverkey
+          inspec exec ubuntuhardening -t ssh://azureuser@20.102.88.75 -i serverkey --chef-license accept --reporter json:inspec-output.json
 
 
