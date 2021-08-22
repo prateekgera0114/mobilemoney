@@ -63,10 +63,10 @@ jobs:
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         uses: appleboy/scp-action@master
         with:
-          host: 20.51.237.143
-          username: nishanth
-          port: 22
+          host: "20.51.237.143"
+          username: "nishanth"
           password: $SERVER_PASSWORD
+          port: "22"
           source: "build/*"
           target: "~"
 
