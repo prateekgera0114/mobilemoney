@@ -1,83 +1,17 @@
 name: Compliance as Code
 on: [push]
 jobs:
-
-  build:
+  inspec-scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2
 
-      - name: Install Node Modules
-        run: npm install
-
-      - name: Run the Build
-        run: npm run build 
+      - name: Install Chef
+        uses: actionshub/chef-install@main
       
-      - name: Upload the Test Coverage Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-files
-          path: build
-        if: always()
+      - name: Verify Chef Inspec is INstalled or Not
+        run: inspec --help
 
-  # inspec-scan:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - name: Checkout the Code
-  #       uses: actions/checkout@v2
-
-  #     - name: install chef
-  #       uses: actionshub/chef-install@main
-
-  #     - name: Run Chef Inspec
-  #       env:
-  #         SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-  #       run: |
-  #         inspec exec ubuntuhardening -t ssh://nishanth@20.51.237.143 --password $SERVER_PASSWORD --chef-license accept --reporter json:inspec-output.json
-  #       continue-on-error: true
-
-  #     - name: Upload the Scan Report
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: inspec-scan-report
-  #         path: inspec-output.json
-  #       if: always()
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download Build File
-        uses: actions/download-artifact@v2
-        with:
-          name: build-files
-          path: build
-      
-      - name: list files
-        run: ls -l build
-
-      - name: remote command execution
-        env:
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        uses: appleboy/scp-action@master
-        with:
-          host: "20.51.237.143"
-          username: "nishanth"
-          password: $SERVER_PASSWORD
-          port: "22"
-          script: whoami
-
-      - name: copy file via ssh key
-        env:
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        uses: appleboy/scp-action@master
-        with:
-          host: "20.51.237.143"
-          username: "nishanth"
-          password: $SERVER_PASSWORD
-          port: "22"
-          source: "build/*"
-          target: "/home/nishanth/"
-
+      - name: Scanning our github runner
+        run: inspec exec ubuntuhardening
