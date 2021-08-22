@@ -14,4 +14,14 @@ jobs:
         run: inspec --help
 
       - name: Scanning our github runner
-        run: inspec exec ubuntuhardening --chef-license accept
+          env:
+            SERVER_PASSWORD : ${{ secrets.SERVER_PASSWORD }}
+        run: inspec exec ubuntuhardening --chef-license accept -t ssh://nishanth@20.51.237.143 --password $SERVER_PASSWORD --reporter json:inspec-output.json
+        continue-on-error: true
+
+      - name: Upload the Scan Report
+        uses: actions/upload-artifacts@v2
+        with:
+          name: inspec-scan-report
+          path: inspec-output.json
+        if: always()
