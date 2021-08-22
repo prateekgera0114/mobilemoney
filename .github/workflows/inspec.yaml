@@ -7,63 +7,24 @@ jobs:
       - name: Checkout the Code
         uses: actions/checkout@v2
 
-      # - name: Verify Basic SSH stuff
-      #   run: | 
-      #     mkdir -p ~/.ssh
-      #     echo "dummy file" > ~/.ssh/dummy.txt
-      #     ls ~/.ssh/dummy.txt
-      #     echo "${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-      #     cat ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-
-      # - name: Run the SSH Agent
-      #   run: |
-      #     eval "$(ssh-agent -s)"
-      #     ssh-add ~/.ssh/id_rsa
-
-      # - name: Add to the Known Hosts
-      #   run: |
-      #     ssh-keyscan -H 20.102.88.75 >> ~/.ssh/known_hosts
-
-      # - name: Configure SSH Access
-      #   env:
-      #     PRIVATE_KEY: ${{ secrets.DEPLOYMENT_SERVER_SSH_PRIVKEY }}
-      #   run: |
-      #     echo "$PRIVATE_KEY" > serverkey.pem && chmod 600 serverkey.pem
-
-      # - name: install chef
-      #   uses: actionshub/chef-install@main
-
-      # - name: Run Chef Help
-      #   run: inspec --help
-
-      # - name: Run the SSH Agent
-      #   run: |
-      #     eval "$(ssh-agent -s)"
-      #     ssh-add serverkey.pem
-
-      # - name: Run Chef Inspec
-      #   env:
-      #     PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
-      #   run: |
-      #     echo "$PRIVATE_KEY" > serverkey && chmod 600 serverkey
-      #     inspec exec ubuntuhardening -t ssh://azureuser@20.102.88.75 -i serverkey --chef-license accept --reporter json:inspec-output.json
+      - name: install chef
+        uses: actionshub/chef-install@main
 
       - name: Run Chef Inspec
         env:
-          PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          echo "$PRIVATE_KEY" > serverkey && chmod 600 serverkey
+          inspec exec ubuntuhardening -t ssh://nishanth@20.51.237.143 --password SERVER_PASSWORD --chef-license accept --reporter json:inspec-output.json
 
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@master
-        env:
-          PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
-        with:
-          host: 20.102.88.75
-          username: azureuser
-          key: $PRIVATE_KEY
-          port: 22
-          source: "package.json"
-          target: "/home/nishanth/package.json"
+      # - name: copy file via ssh password
+      #   uses: appleboy/scp-action@master
+      #   env:
+      #     PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
+      #   with:
+      #     host: 20.102.88.75
+      #     username: azureuser
+      #     key: $PRIVATE_KEY
+      #     port: 22
+      #     source: "package.json"
+      #     target: "/home/nishanth/package.json"
 
