@@ -1,8 +1,29 @@
 name: Compliance as Code
 on: [push]
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    needs: code-coverage
+    steps:
+      - name: Checkout the Code
+        uses: actions/checkout@v2
+
+      - name: Install Node Modules
+        run: npm install
+
+      - name: Run the Build
+        run: npm run build 
+      
+      - name: Upload the Test Coverage Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-files
+          path: build
+        if: always()
+
   inspec-scan:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2
@@ -22,4 +43,30 @@ jobs:
         with:
           name: inspec-scan-report
           path: inspec-output.json
-        if: always()   
+        if: always()
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: inspec-scan
+    steps:
+      - name: Download Build File
+        uses: actions/download-artifact@v2
+        with:
+          name: build-files
+          path: build
+      
+      - name: list files
+        run: ls -l
+
+      - name: copy file via ssh key
+        env:
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+        uses: appleboy/scp-action@master
+        with:
+          host: 20.51.237.143
+          username: nishanth
+          port: 22
+          password: $SERVER_PASSWORD
+          source: "build/*"
+          target: "~"
+
