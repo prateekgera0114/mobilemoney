@@ -1,4 +1,4 @@
-name: Compliance as Code 123
+name: Compliance as Code 1234
 on: [push]
 jobs:
   inspec-scan:
