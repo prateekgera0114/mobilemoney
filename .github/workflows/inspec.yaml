@@ -14,4 +14,4 @@ jobs:
         run: inspec --help
 
       - name: Scanning our github runner
-        run: inspec exec ubuntuhardening
+        run: inspec exec ubuntuhardening --chef-license
